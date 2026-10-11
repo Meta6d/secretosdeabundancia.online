@@ -13,35 +13,206 @@
 <link rel="dns-prefetch" href="https://license.vturb.com">
 
 
-<!-- Franja de ventas: el contador es demostrativo y no representa visitantes reales. La fecha siempre es el día actual del visitante. -->
+
 <div class="mv-sales-banner" data-mv-sales-banner>
-  <div class="mv-deadline"><strong data-mv-date>11/10/2026</strong> ES EL ÚLTIMO DÍA PARA VER</div>
-  <div class="mv-viewers"><span class="mv-dot" aria-hidden="true"></span><span><strong data-mv-count>127</strong> Personas viendo<span data-mv-region></div>
+  <div class="mv-deadline">
+    <span>
+      <strong data-mv-date></strong>
+      ES EL ÚLTIMO DÍA PARA VER
+    </span>
+  </div>
+
+  <div class="mv-viewers">
+    <span class="mv-dot" aria-hidden="true"></span>
+    <span>Contenido disponible ahora</span>
+    <span data-mv-region></span>
+  </div>
 </div>
+
 <style>
-.mv-sales-banner{--mv-red:#ed1533;--mv-white:#fff;--mv-ink:#3f444c;--mv-line:#e8e9ed;--mv-green:#20a36b;font-family:Arial,Helvetica,sans-serif;width:100%;box-sizing:border-box}
-.mv-sales-banner *{box-sizing:border-box}
-.mv-sales-banner .mv-deadline{background:var(--mv-red);color:var(--mv-white);text-align:center;padding:9px 16px;font-size:13px;line-height:1.5}
-.mv-sales-banner .mv-viewers{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;padding:14px 16px;background:var(--mv-white);border-bottom:1px solid var(--mv-line);color:var(--mv-ink);font-size:13px;line-height:1.5}
-.mv-sales-banner .mv-dot{width:7px;height:7px;flex-shrink:0;background:var(--mv-green);border-radius:50%}
-.mv-sales-banner .mv-demo{font-size:10px;border:1px solid var(--mv-line);padding:2px 6px;border-radius:4px}
+.mv-sales-banner {
+  --mv-red: #ed1533;
+  --mv-white: #fff;
+  --mv-ink: #3f444c;
+  --mv-line: #e8e9ed;
+  --mv-green: #20a36b;
+
+  font-family: Arial, Helvetica, sans-serif;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.mv-sales-banner * {
+  box-sizing: border-box;
+}
+
+.mv-sales-banner .mv-deadline {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--mv-red);
+  color: var(--mv-white);
+  text-align: center;
+  padding: 9px 16px;
+  font-size: 13px;
+  line-height: 1.5;
+  animation: mv-pulse 2.4s ease-in-out infinite;
+}
+
+.mv-sales-banner .mv-deadline > span {
+  position: relative;
+  z-index: 1;
+}
+
+.mv-sales-banner .mv-deadline::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 55%;
+  pointer-events: none;
+  background: linear-gradient(
+    110deg,
+    transparent 0%,
+    rgba(255,255,255,0.04) 25%,
+    rgba(255,255,255,0.34) 50%,
+    rgba(255,255,255,0.04) 75%,
+    transparent 100%
+  );
+  transform: translateX(-200%);
+  animation: mv-shine 3.5s ease-in-out infinite;
+}
+
+.mv-sales-banner .mv-viewers {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 14px 16px;
+  background: var(--mv-white);
+  border-bottom: 1px solid var(--mv-line);
+  color: var(--mv-ink);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.mv-sales-banner .mv-dot {
+  width: 7px;
+  height: 7px;
+  flex-shrink: 0;
+  background: var(--mv-green);
+  border-radius: 50%;
+}
+
+@keyframes mv-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 rgba(237, 21, 51, 0);
+    filter: brightness(1);
+  }
+
+  50% {
+    box-shadow: 0 0 14px rgba(237, 21, 51, 0.35);
+    filter: brightness(1.12);
+  }
+}
+
+@keyframes mv-shine {
+  0%, 15% {
+    transform: translateX(-200%);
+  }
+
+  65%, 100% {
+    transform: translateX(300%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mv-sales-banner .mv-deadline,
+  .mv-sales-banner .mv-deadline::after {
+    animation: none;
+  }
+}
 </style>
+
 <script>
-(function(){
-  var script=document.currentScript;
-  var banner=script&&script.previousElementSibling&&script.previousElementSibling.previousElementSibling;
-  if(!banner||!banner.matches('[data-mv-sales-banner]')||banner.dataset.started)return;
-  banner.dataset.started='true';
-  var dateEl=banner.querySelector('[data-mv-date]');
-  if(dateEl){var now=new Date();dateEl.textContent=('0'+now.getDate()).slice(-2)+'/'+('0'+(now.getMonth()+1)).slice(-2)+'/'+now.getFullYear();}
-  var count=127;
-  var counter=banner.querySelector('[data-mv-count]');
-  var timer=setInterval(function(){if(!banner.isConnected){clearInterval(timer);return;}count+=1;if(counter)counter.textContent=String(count);},10000);
-  // Servicio externo: recibe la IP del visitante para estimar la región.
-  fetch('https://ipwho.is/',{signal:AbortSignal.timeout(5000)}).then(function(response){if(!response.ok)throw new Error('Ubicación no disponible');return response.json();}).then(function(data){var region=banner.querySelector('[data-mv-region]');if(data.success&&typeof data.region==='string'&&data.region&&region)region.textContent=' · región de '+data.region;}).catch(function(){/* Sin región cuando el servicio no esté disponible. */});
+(function () {
+  var script = document.currentScript;
+  var banner = script &&
+    script.previousElementSibling &&
+    script.previousElementSibling.previousElementSibling;
+
+  if (
+    !banner ||
+    !banner.matches('[data-mv-sales-banner]') ||
+    banner.dataset.started
+  ) return;
+
+  banner.dataset.started = 'true';
+
+  // Data atual no fuso horário local do visitante
+  function updateDate() {
+    var dateEl = banner.querySelector('[data-mv-date]');
+    if (!dateEl) return;
+
+    var now = new Date();
+    var day = String(now.getDate()).padStart(2, '0');
+    var month = String(now.getMonth() + 1).padStart(2, '0');
+    var year = now.getFullYear();
+
+    dateEl.textContent =
+      day + '/' + month + '/' + year;
+  }
+
+  updateDate();
+
+  // Atualiza a data mesmo se a página ficar aberta
+  var dateTimer = setInterval(function () {
+    if (!banner.isConnected) {
+      clearInterval(dateTimer);
+      return;
+    }
+
+    updateDate();
+  }, 60000);
+
+  // Tenta obter a região aproximada do visitante
+  if (
+    typeof fetch === 'function' &&
+    typeof AbortSignal !== 'undefined' &&
+    typeof AbortSignal.timeout === 'function'
+  ) {
+    fetch('https://ipwho.is/', {
+      signal: AbortSignal.timeout(5000)
+    })
+      .then(function (response) {
+        if (!response.ok) {
+          throw new Error('Região indisponível');
+        }
+
+        return response.json();
+      })
+      .then(function (data) {
+        var region = banner.querySelector('[data-mv-region]');
+
+        if (
+          data.success &&
+          typeof data.region === 'string' &&
+          data.region &&
+          region
+        ) {
+          region.textContent = ' · ' + data.region;
+        }
+      })
+      .catch(function () {
+        // A página continua funcionando sem a região.
+      });
+  }
 })();
 </script>
-   
+
    
    <meta property="og:type" content="website">
     <meta property="og:url" content="https://secretosdeabundancia.online">
