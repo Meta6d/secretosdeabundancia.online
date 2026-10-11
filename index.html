@@ -100,7 +100,8 @@
       </div>
     </header>
 
-  <section class="comments py-4">
+<section class="comments py-4 d-none" id="comments-section">
+
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
@@ -534,9 +535,27 @@ function getParams() {
           
   </footer>
 
-      <script type="text/javascript">
-      setTimeout(() => {document.getElementById("cta1").classList.remove("d-none"); document.getElementById("cta2").classList.remove("d-none")}, 3158000); // temporização da Call to Action (em milissegundos)
-    </script>
+      
+<script>
+(function () {
+  const TEMPO_ESPERA = 3158000;
+
+  setTimeout(function () {
+    const elementos = [
+      document.getElementById("comments-section"),
+      document.getElementById("cta1"),
+      document.getElementById("cta2")
+    ];
+
+    elementos.forEach(function (elemento) {
+      if (elemento) {
+        elemento.classList.remove("d-none");
+      }
+    });
+  }, TEMPO_ESPERA);
+})();
+</script>
+
 
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
     integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
